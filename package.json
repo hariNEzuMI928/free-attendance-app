@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/hariNEzuMI928/free-attendance-app/issues"
   },
-  "homepage": "https://github.com/hariNEzuMI928/free-attendance-app#readme"
+  "homepage": "https://github.com/hariNEzuMI928/free-attendance-app#readme",
+  "dependencies": {
+    "@slack/bolt": "^3.4.1"
+  }
 }
