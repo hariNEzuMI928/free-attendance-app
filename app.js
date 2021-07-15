@@ -97,17 +97,21 @@ app.action("select_location_action", async ({ body, ack, say }) => {
 
 // 勤怠打刻開始モーダルでのデータ送信イベントを処理
 app.view("kintai_start_modal", async ({ ack, body, view, client }) => {
-  // モーダルでのデータ送信イベントを確認
   await ack();
 
+  const { profile: profile } = await app.client.users.profile.get({
+    user: body.user.id,
+  });
+  const channel_id = body.response_urls[0].channel_id;
   const selected_option =
     view.state.values[Object.keys(view.state.values)[0]].select_location_action
       .selected_option.value;
-  const msg = `${locations[selected_option]} で作業開始します！`;
-  const channel_id = body.response_urls[0].channel_id;
+  const msg = `${locations[selected_option]} で業務開始します！`;
 
   try {
     await client.chat.postMessage({
+      username: user.username,
+      icon_url: profile.image_48,
       channel: channel_id,
       text: msg,
     });
