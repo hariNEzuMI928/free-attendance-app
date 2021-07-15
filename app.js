@@ -52,20 +52,34 @@ app.shortcut("kintai_start_shortcut", async ({ shortcut, ack, context }) => {
             },
           },
           {
-            type: "section",
-            text: {
-              type: "mrkdwn",
-              text: "どこで作業開始しますか？",
-            },
-            accessory: {
+            type: "input",
+            element: {
               type: "static_select",
+              action_id: "select_location_action",
               placeholder: {
                 type: "plain_text",
                 text: "Select",
                 emoji: true,
               },
               options: locationOptions,
-              action_id: "select_location_action",
+            },
+            label: {
+              type: "plain_text",
+              text: "どこで作業開始しますか？",
+              emoji: true,
+            },
+          },
+          {
+            type: "input",
+            element: {
+              type: "conversations_select",
+              action_id: "input",
+              response_url_enabled: true,
+              default_to_current_conversation: true,
+            },
+            label: {
+              type: "plain_text",
+              text: "投稿するチャンネル",
             },
           },
         ],
@@ -90,11 +104,11 @@ app.view("kintai_start_modal", async ({ ack, body, view, client }) => {
     view.state.values[Object.keys(view.state.values)[0]].select_location_action
       .selected_option.value;
   const msg = `${locations[selected_option]} で作業開始します！`;
-  const user = body.user.id;
+  const channel_id = body.response_urls[0].channel_id;
 
   try {
     await client.chat.postMessage({
-      channel: user, // TODO: チャンネルにする、アプリが投稿ではなく自分のアカウントで投稿させる
+      channel: channel_id,
       text: msg,
     });
   } catch (error) {
