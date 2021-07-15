@@ -9,16 +9,15 @@ const app = new App({
 
 // 作業場所
 const locations = ["自宅", "会社", "布団の中", "その他の場所"];
-let locationOptions = [];
-locations.forEach((location, index) => {
-  locationOptions.push({
+const locationOptions = locations.map((location, index) => {
+  return {
     text: {
       type: "plain_text",
       text: location,
       emoji: true,
     },
     value: index.toString(),
-  });
+  };
 });
 
 // 勤怠打刻開始モーダル
