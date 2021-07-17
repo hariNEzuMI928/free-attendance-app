@@ -107,7 +107,7 @@ app.view("kintai_start_modal", async ({ ack, body, view, client }) => {
   const channelId = body.response_urls[0].channel_id;
   const selectedOption =
     view.state.values[Object.keys(view.state.values)[0]].select_location_action
-      .selectedOption.value;
+      .selected_option.value;
   const msg = `${locations[selectedOption]} で業務開始します！`;
 
   try {
