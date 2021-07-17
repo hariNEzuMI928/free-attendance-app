@@ -22,12 +22,11 @@ const locationOptions = locations.map((location, index) => {
 });
 
 // 勤怠打刻開始モーダル
-app.shortcut("kintai_start_shortcut", async ({ shortcut, ack, context }) => {
+app.shortcut("kintai_start_shortcut", async ({ shortcut, ack }) => {
   ack();
 
   try {
     await app.client.views.open({
-      token: context.botToken,
       trigger_id: shortcut.trigger_id,
       view: {
         title: {
@@ -92,7 +91,7 @@ app.shortcut("kintai_start_shortcut", async ({ shortcut, ack, context }) => {
 });
 
 // 勤怠打刻開始モーダルでのセレクトボックス選択イベント
-app.action("select_location_action", async ({ body, ack, say }) => {
+app.action("select_location_action", async ({ ack }) => {
   await ack();
 });
 
@@ -119,7 +118,46 @@ app.view("kintai_start_modal", async ({ ack, body, view, client }) => {
     });
 
     if (freeeService.postTimeClocks(slackUserId)) {
-      console.log("成功！");
+      await client.chat.postMessage({
+        channel: slackUserId,
+        text: " ",
+        blocks: [
+          {
+            type: "section",
+            text: {
+              type: "plain_text",
+              text: "業務開始！",
+              emoji: true,
+            },
+          },
+          {
+            type: "actions",
+            elements: [
+              {
+                type: "button",
+                text: {
+                  type: "plain_text",
+                  emoji: true,
+                  text: "休憩開始",
+                },
+                style: "primary",
+                value: "click_me_123",
+                action_id: "actionId-0",
+              },
+              {
+                type: "button",
+                text: {
+                  type: "plain_text",
+                  emoji: true,
+                  text: "退勤",
+                },
+                value: "click_me_123",
+                action_id: "actionId-1",
+              },
+            ],
+          },
+        ],
+      });
     }
   } catch (error) {
     console.error(error);
