@@ -105,9 +105,20 @@ app.view("kintai_start_modal", async ({ ack, body, view, client }) => {
   });
   const channelId = body.response_urls[0].channel_id;
   const selectedOption =
-    view.state.values[Object.keys(view.state.values)[0]].select_location_action
-      .selected_option.value;
+    view.state.values[
+      Object.keys(view.state.values).filter(
+        (value) => view.state.values[value].select_location_action !== undefined
+      )[0]
+    ].select_location_action.selected_option.value;
   const msg = `${locations[selectedOption]} で業務開始します！`;
+
+  const date = new Date();
+  const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`.replace(
+    /\n|\r/g,
+    ""
+  );
 
   try {
     await client.chat.postMessage({
@@ -117,52 +128,112 @@ app.view("kintai_start_modal", async ({ ack, body, view, client }) => {
       text: msg,
     });
 
-    if (freeeService.postTimeClocks(slackUserId)) {
-      await client.chat.postMessage({
-        channel: slackUserId,
-        text: " ",
-        blocks: [
-          {
-            type: "section",
-            text: {
-              type: "plain_text",
-              text: "業務開始！",
-              emoji: true,
+    freeeService.postTimeClocks(
+      slackUserId,
+      freeeService.TIME_CLOCK_TYPE.clock_in.value
+    );
+    await client.chat.postMessage({
+      channel: slackUserId,
+      text: " ",
+      blocks: [
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: "*" + formattedDate + "* :sunny:",
+          },
+        },
+        {
+          type: "actions",
+          elements: [
+            {
+              type: "button",
+              text: {
+                type: "plain_text",
+                emoji: true,
+                text: freeeService.TIME_CLOCK_TYPE.break_begin.text,
+              },
+              style: "primary",
+              value: freeeService.TIME_CLOCK_TYPE.break_begin.value,
+              action_id: freeeService.TIME_CLOCK_TYPE.break_begin.value,
             },
-          },
-          {
-            type: "actions",
-            elements: [
-              {
-                type: "button",
-                text: {
-                  type: "plain_text",
-                  emoji: true,
-                  text: "休憩開始",
-                },
-                style: "primary",
-                value: "click_me_123",
-                action_id: "actionId-0",
+            {
+              type: "button",
+              text: {
+                type: "plain_text",
+                emoji: true,
+                text: freeeService.TIME_CLOCK_TYPE.break_end.text,
               },
-              {
-                type: "button",
-                text: {
-                  type: "plain_text",
-                  emoji: true,
-                  text: "退勤",
-                },
-                value: "click_me_123",
-                action_id: "actionId-1",
+              value: freeeService.TIME_CLOCK_TYPE.break_end.value,
+              action_id: freeeService.TIME_CLOCK_TYPE.break_end.value,
+            },
+            {
+              type: "button",
+              text: {
+                type: "plain_text",
+                emoji: true,
+                text: freeeService.TIME_CLOCK_TYPE.clock_out.text,
               },
-            ],
-          },
-        ],
-      });
-    }
+              style: "danger",
+              value: freeeService.TIME_CLOCK_TYPE.clock_out.value,
+              action_id: freeeService.TIME_CLOCK_TYPE.clock_out.value,
+            },
+          ],
+        },
+      ],
+    });
   } catch (error) {
     console.error(error);
   }
 });
+
+app.action(
+  freeeService.TIME_CLOCK_TYPE.break_begin.value,
+  async ({ body, ack, say }) => {
+    await ack();
+
+    const actionId = body.actions[0].action_id;
+    const slackUserId = body.user.id;
+
+    freeeService.postTimeClocks(
+      slackUserId,
+      freeeService.TIME_CLOCK_TYPE[actionId].value
+    );
+    await say(freeeService.TIME_CLOCK_TYPE[actionId].text);
+  }
+);
+
+app.action(
+  freeeService.TIME_CLOCK_TYPE.break_end.value,
+  async ({ body, ack, say }) => {
+    await ack();
+
+    const actionId = body.actions[0].action_id;
+    const slackUserId = body.user.id;
+
+    freeeService.postTimeClocks(
+      slackUserId,
+      freeeService.TIME_CLOCK_TYPE[actionId].value
+    );
+    await say(freeeService.TIME_CLOCK_TYPE[actionId].text);
+  }
+);
+
+app.action(
+  freeeService.TIME_CLOCK_TYPE.clock_out.value,
+  async ({ body, ack, say }) => {
+    await ack();
+
+    const actionId = body.actions[0].action_id;
+    const slackUserId = body.user.id;
+
+    freeeService.postTimeClocks(
+      slackUserId,
+      freeeService.TIME_CLOCK_TYPE[actionId].value
+    );
+    await say(freeeService.TIME_CLOCK_TYPE[actionId].text);
+  }
+);
 
 (async () => {
   // Start your app

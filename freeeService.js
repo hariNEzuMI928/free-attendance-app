@@ -6,13 +6,20 @@ const headers = {
 };
 
 module.exports = {
-  postTimeClocks: async (slackUserId) => {
+  TIME_CLOCK_TYPE: {
+    clock_in: { value: "clock_in", text: "業務開始" },
+    break_begin: { value: "break_begin", text: "休憩開始" },
+    break_end: { value: "break_end", text: "休憩終了" },
+    clock_out: { value: "clock_out", text: "退勤" },
+  },
+
+  postTimeClocks: async (slackUserId, type) => {
     const freeeEmpId = getFreeeIdBySlackId(slackUserId);
     const uri = "/employees/" + freeeEmpId + "/time_clocks";
     const payload = {
       company_id: process.env.FREEEE_CAMPANY_ID,
-      type: "clock_in", // clock_in, break_begin, break_end, clock_out
-      datetime: "2020-04-04 11:22:33", // 打刻日時 YYYY-MM-DD HH:MM:SS
+      type: type,
+      datetime: "2020-04-07 " + new Date().toLocaleTimeString("en-GB"), // 打刻日時 YYYY-MM-DD HH:MM:SS
     };
     // payload.base_date = "2020/04/04"; // 退勤が翌日の場合はここに出勤日の日付を入れる // TODO: base_date を設定する条件を用意
 
@@ -24,10 +31,13 @@ module.exports = {
     });
     const responseData = await response.json();
 
-    return (
-      // 成功可否
-      responseData.employee_time_clock && responseData.employee_time_clock.id
-    );
+    if (
+      !responseData.employee_time_clock ||
+      !responseData.employee_time_clock.id
+    ) {
+      console.log("失敗");
+      console.log("responseData", responseData);
+    }
   },
 };
 
