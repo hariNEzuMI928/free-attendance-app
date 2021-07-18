@@ -135,7 +135,7 @@ app.view("kintai_start_modal", async ({ ack, body, view, client }) => {
 
     await client.chat.postMessage({
       channel: slackUserId,
-      text: " ",
+      text: channelId, // ButtonアクションにチャンネルIDを渡す
       blocks: [
         {
           type: "section",
@@ -195,13 +195,16 @@ app.action(
 
     const actionId = body.actions[0].action_id;
     const slackUserId = body.user.id;
+    const channelId = body.message.text;
 
     try {
       await freeeService.postTimeClocks(
         slackUserId,
         freeeService.TIME_CLOCK_TYPE[actionId].value
       );
-      await say("[打刻] *" + freeeService.TIME_CLOCK_TYPE[actionId].text + "*");
+      await say(`[打刻] *${freeeService.TIME_CLOCK_TYPE[actionId].text}*`);
+
+      await postTimeClocksMsg(slackUserId, channelId, actionId);
     } catch (err) {
       console.error(err);
     }
@@ -215,13 +218,16 @@ app.action(
 
     const actionId = body.actions[0].action_id;
     const slackUserId = body.user.id;
+    const channelId = body.message.text;
 
     try {
       await freeeService.postTimeClocks(
         slackUserId,
         freeeService.TIME_CLOCK_TYPE[actionId].value
       );
-      await say("[打刻] *" + freeeService.TIME_CLOCK_TYPE[actionId].text + "*");
+      await say(`[打刻] *${freeeService.TIME_CLOCK_TYPE[actionId].text}*`);
+
+      await postTimeClocksMsg(slackUserId, channelId, actionId);
     } catch (err) {
       console.error(err);
     }
@@ -235,19 +241,42 @@ app.action(
 
     const actionId = body.actions[0].action_id;
     const slackUserId = body.user.id;
+    const channelId = body.message.text;
 
     try {
       await freeeService.postTimeClocks(
         slackUserId,
         freeeService.TIME_CLOCK_TYPE[actionId].value
       );
-      await say("[打刻] *" + freeeService.TIME_CLOCK_TYPE[actionId].text + "*");
+      await say(`[打刻] *${freeeService.TIME_CLOCK_TYPE[actionId].text}*`);
       await say("今日もお疲れ様でした :star2:");
+
+      await postTimeClocksMsg(slackUserId, channelId, actionId);
     } catch (err) {
       console.error(err);
     }
   }
 );
+
+const postTimeClocksMsg = async (slackUserId, channelId, actionId) => {
+  try {
+    const { profile: profile } = await app.client.users.profile.get({
+      user: slackUserId,
+    });
+    const msg = `${freeeService.TIME_CLOCK_TYPE[actionId].text} します`;
+
+    await app.client.chat.postMessage({
+      username: profile.real_name_normalized,
+      icon_url: profile.image_48,
+      channel: channelId,
+      text: msg,
+    });
+
+    return Promise.resolve();
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
 
 (async () => {
   // Start your app
