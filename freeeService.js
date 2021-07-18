@@ -23,21 +23,26 @@ module.exports = {
     };
     // payload.base_date = "2020/04/04"; // 退勤が翌日の場合はここに出勤日の日付を入れる // TODO: base_date を設定する条件を用意
 
-    // TODO: エラーハンドリング（kintai_start_modal側でコントロールできるように）
-    const response = await fetch(FREEE_API_ENDPOINT + uri, {
-      method: "POST",
-      headers: headers,
-      body: JSON.stringify(payload),
-    });
-    const responseData = await response.json();
+    try {
+      const response = await fetch(FREEE_API_ENDPOINT + uri, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(payload),
+      });
+      const responseData = await response.json();
 
-    if (
-      !responseData.employee_time_clock ||
-      !responseData.employee_time_clock.id
-    ) {
-      console.log("失敗");
-      console.log("responseData", responseData);
+      if (
+        !responseData.employee_time_clock ||
+        !responseData.employee_time_clock.id
+      ) {
+        return Promise.reject(
+          "postTimeClocks fail : " + JSON.stringify(responseData)
+        );
+      }
+    } catch (err) {
+      return Promise.reject(err);
     }
+      return Promise.resolve();
   },
 };
 

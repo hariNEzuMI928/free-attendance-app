@@ -85,8 +85,8 @@ app.shortcut("kintai_start_shortcut", async ({ shortcut, ack }) => {
         ],
       },
     });
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
   }
 });
 
@@ -121,6 +121,11 @@ app.view("kintai_start_modal", async ({ ack, body, view, client }) => {
   );
 
   try {
+    await freeeService.postTimeClocks(
+      slackUserId,
+      freeeService.TIME_CLOCK_TYPE.clock_in.value
+    );
+
     await client.chat.postMessage({
       username: profile.real_name_normalized,
       icon_url: profile.image_48,
@@ -128,10 +133,6 @@ app.view("kintai_start_modal", async ({ ack, body, view, client }) => {
       text: msg,
     });
 
-    freeeService.postTimeClocks(
-      slackUserId,
-      freeeService.TIME_CLOCK_TYPE.clock_in.value
-    );
     await client.chat.postMessage({
       channel: slackUserId,
       text: " ",
@@ -182,8 +183,8 @@ app.view("kintai_start_modal", async ({ ack, body, view, client }) => {
         },
       ],
     });
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
   }
 });
 
@@ -195,11 +196,15 @@ app.action(
     const actionId = body.actions[0].action_id;
     const slackUserId = body.user.id;
 
-    freeeService.postTimeClocks(
-      slackUserId,
-      freeeService.TIME_CLOCK_TYPE[actionId].value
-    );
-    await say(freeeService.TIME_CLOCK_TYPE[actionId].text);
+    try {
+      await freeeService.postTimeClocks(
+        slackUserId,
+        freeeService.TIME_CLOCK_TYPE[actionId].value
+      );
+      await say("[打刻] *" + freeeService.TIME_CLOCK_TYPE[actionId].text + "*");
+    } catch (err) {
+      console.error(err);
+    }
   }
 );
 
@@ -211,11 +216,15 @@ app.action(
     const actionId = body.actions[0].action_id;
     const slackUserId = body.user.id;
 
-    freeeService.postTimeClocks(
-      slackUserId,
-      freeeService.TIME_CLOCK_TYPE[actionId].value
-    );
-    await say(freeeService.TIME_CLOCK_TYPE[actionId].text);
+    try {
+      await freeeService.postTimeClocks(
+        slackUserId,
+        freeeService.TIME_CLOCK_TYPE[actionId].value
+      );
+      await say("[打刻] *" + freeeService.TIME_CLOCK_TYPE[actionId].text + "*");
+    } catch (err) {
+      console.error(err);
+    }
   }
 );
 
@@ -227,11 +236,16 @@ app.action(
     const actionId = body.actions[0].action_id;
     const slackUserId = body.user.id;
 
-    freeeService.postTimeClocks(
-      slackUserId,
-      freeeService.TIME_CLOCK_TYPE[actionId].value
-    );
-    await say(freeeService.TIME_CLOCK_TYPE[actionId].text);
+    try {
+      await freeeService.postTimeClocks(
+        slackUserId,
+        freeeService.TIME_CLOCK_TYPE[actionId].value
+      );
+      await say("[打刻] *" + freeeService.TIME_CLOCK_TYPE[actionId].text + "*");
+      await say("今日もお疲れ様でした :star2:");
+    } catch (err) {
+      console.error(err);
+    }
   }
 );
 
