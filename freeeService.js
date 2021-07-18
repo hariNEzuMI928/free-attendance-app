@@ -19,7 +19,7 @@ module.exports = {
     const payload = {
       company_id: process.env.FREEEE_CAMPANY_ID,
       type: type,
-      datetime: "2020-04-11 " + new Date().toLocaleTimeString("en-GB"), // 打刻日時 YYYY-MM-DD HH:MM:SS
+      datetime: "2020-04-14 " + new Date().toLocaleTimeString("en-GB"), // 打刻日時 YYYY-MM-DD HH:MM:SS
     };
     // payload.base_date = "2020/04/04"; // 退勤が翌日の場合はここに出勤日の日付を入れる // TODO: base_date を設定する条件を用意
 

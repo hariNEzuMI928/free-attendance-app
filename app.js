@@ -21,6 +21,13 @@ const locationOptions = locations.map((location, index) => {
   };
 });
 
+// 業務中、休憩中、業務終了
+const slackEmojiStatus = {
+  during_work: ":sunny:",
+  during_break: ":sushi:",
+  after_work: ":crescent_moon:",
+};
+
 // 勤怠打刻開始モーダル
 app.shortcut("kintai_start_shortcut", async ({ shortcut, ack }) => {
   ack();
@@ -183,6 +190,8 @@ app.view("kintai_start_modal", async ({ ack, body, view, client }) => {
         },
       ],
     });
+
+    await changeSlackEmojiStatus(slackEmojiStatus.during_work);
   } catch (err) {
     console.error(err);
   }
@@ -205,6 +214,8 @@ app.action(
       await say(`[打刻] *${freeeService.TIME_CLOCK_TYPE[actionId].text}*`);
 
       await postTimeClocksMsg(slackUserId, channelId, actionId);
+
+      await changeSlackEmojiStatus(slackEmojiStatus.during_break);
     } catch (err) {
       console.error(err);
     }
@@ -228,6 +239,8 @@ app.action(
       await say(`[打刻] *${freeeService.TIME_CLOCK_TYPE[actionId].text}*`);
 
       await postTimeClocksMsg(slackUserId, channelId, actionId);
+
+      await changeSlackEmojiStatus(slackEmojiStatus.during_work);
     } catch (err) {
       console.error(err);
     }
@@ -252,6 +265,8 @@ app.action(
       await say("今日もお疲れ様でした :star2:");
 
       await postTimeClocksMsg(slackUserId, channelId, actionId);
+
+      await changeSlackEmojiStatus(slackEmojiStatus.after_work);
     } catch (err) {
       console.error(err);
     }
@@ -270,6 +285,19 @@ const postTimeClocksMsg = async (slackUserId, channelId, actionId) => {
       icon_url: profile.image_48,
       channel: channelId,
       text: msg,
+    });
+
+    return Promise.resolve();
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
+const changeSlackEmojiStatus = async (status_emoji) => {
+  try {
+    await app.client.users.profile.set({
+      token: process.env.SLACK_USER_TOKEN,
+      profile: { status_emoji: status_emoji },
     });
 
     return Promise.resolve();
