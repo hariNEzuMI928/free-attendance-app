@@ -14,12 +14,12 @@ module.exports = {
   },
 
   postTimeClocks: async (slackUserId, type) => {
-    const freeeEmpId = getFreeeIdBySlackId(slackUserId);
+    const freeeEmpId = await getFreeeIdBySlackId(slackUserId);
     const uri = "/employees/" + freeeEmpId + "/time_clocks";
     const payload = {
       company_id: process.env.FREEEE_CAMPANY_ID,
       type: type,
-      datetime: "2020-04-14 " + new Date().toLocaleTimeString("en-GB"), // 打刻日時 YYYY-MM-DD HH:MM:SS
+      datetime: formatDate(),
     };
     // payload.base_date = "2020/04/04"; // 退勤が翌日の場合はここに出勤日の日付を入れる // TODO: base_date を設定する条件を用意
 
@@ -42,12 +42,31 @@ module.exports = {
     } catch (err) {
       return Promise.reject(err);
     }
-      return Promise.resolve();
+    return Promise.resolve();
   },
 };
 
-const getFreeeIdBySlackId = (slackId) => {
-  // TODO:  slackUserIdからFreeeIDを取得
-  slackId;
-  return 1208451;
+const formatDate = () => {
+  const d = new Date();
+  return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2)
+    + " " + ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2) + ":" + ("0" + d.getSeconds()).slice(-2) + "." + ("0" + d.getMilliseconds()).slice(-2);
+}
+
+const getFreeeIdBySlackId = async (slackId) => {
+  const url = process.env.GET_FREEE_EMP_ID_BY_SLACK_ID
+    + `?token=${process.env.GAS_TOKEN}&slack_id=${slackId}`;
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+    });
+    const responseData = await response.json();
+
+    if (responseData?.ok === false) {
+      return Promise.reject("FreeeのIDが取得できません。");
+    }
+    return responseData?.freee_emp_id;
+
+  } catch (err) {
+    return Promise.reject(err);
+  }
 };
