@@ -6,6 +6,7 @@ const freeeService = require("./freeeService");
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET,
+  processBeforeResponse: true,
 });
 
 // 作業開始場所

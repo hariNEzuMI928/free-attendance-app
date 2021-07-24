@@ -3,3 +3,5 @@ SLACK_BOT_TOKEN=xoxb-xxxxxxxxxx
 SLACK_USER_TOKEN=xoxp-xxxxxxxxxx
 FREEE_API_ACCESS_TOKEN=xxxxxxxxxx
 FREEEE_CAMPANY_ID=xxxxxxxxxx
+GET_FREEE_EMP_ID_BY_SLACK_ID=https://script.google.com/
+GAS_TOKEN=
