@@ -89,18 +89,21 @@ app.action("select_location_action", async ({ ack }) => {
 // 勤怠打刻開始モーダルでのデータ送信イベントを処理
 app.view("kintai_start_modal", async ({ ack, body, view, client }) => {
   await ack();
+  startKintaiModal(body, view, client);
+});
 
-  const slackUserId = body.user.id;
-  const channelId = body.response_urls[0].channel_id;
-  const selectedOption =
-    view.state.values[
-      Object.keys(view.state.values).filter(
-        (value) => view.state.values[value].select_location_action !== undefined
-      )[0]
-    ].select_location_action.selected_option.value;
-  const msg = `${commonService.locations[selectedOption]} で${freeeService.TIME_CLOCK_TYPE.clock_in.text}します！${commonService.slackEmojiStatus.during_work}`;
-
+const startKintaiModal = async (body, view, client) => {
   try {
+    const slackUserId = body.user.id;
+    const channelId = body.response_urls[0].channel_id;
+    const selectedOption =
+      view.state.values[
+        Object.keys(view.state.values).filter(
+          (value) => view.state.values[value].select_location_action !== undefined
+        )[0]
+      ].select_location_action.selected_option.value;
+    const msg = `${commonService.locations[selectedOption]} で${freeeService.TIME_CLOCK_TYPE.clock_in.text}します！${commonService.slackEmojiStatus.during_work}`;
+
     const { profile: profile } = await app.client.users.profile.get({
       user: slackUserId,
     });
@@ -173,7 +176,7 @@ app.view("kintai_start_modal", async ({ ack, body, view, client }) => {
     console.error(err);
     client.chat.postMessage({ channel: slackUserId, text: ERROR_MSG });
   }
-});
+}
 
 app.action(
   freeeService.TIME_CLOCK_TYPE.break_begin.value,
