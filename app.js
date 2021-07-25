@@ -2,6 +2,7 @@ const { App } = require("@slack/bolt");
 require("dotenv").config();
 fetch = require("node-fetch");
 const freeeService = require("./freeeService");
+const commonService = require("./commonService");
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
@@ -9,25 +10,7 @@ const app = new App({
   processBeforeResponse: true,
 });
 
-// 作業開始場所
-const locations = ["自宅", "会社", "布団の中", "その他の場所"];
-const locationOptions = locations.map((location, index) => {
-  return {
-    text: {
-      type: "plain_text",
-      text: location,
-      emoji: true,
-    },
-    value: index.toString(),
-  };
-});
-
-// 業務中、休憩中、業務終了
-const slackEmojiStatus = {
-  during_work: ":sunny:",
-  during_break: ":sushi:",
-  after_work: ":crescent_moon:",
-};
+const ERROR_MSG = "[ERR] 打刻に失敗しました:cry:";
 
 // 勤怠打刻開始モーダル
 app.shortcut("kintai_start_shortcut", async ({ shortcut, ack }) => {
@@ -69,7 +52,7 @@ app.shortcut("kintai_start_shortcut", async ({ shortcut, ack }) => {
                 text: "Select",
                 emoji: true,
               },
-              options: locationOptions,
+              options: commonService.locationOptions,
             },
             label: {
               type: "plain_text",
@@ -108,9 +91,6 @@ app.view("kintai_start_modal", async ({ ack, body, view, client }) => {
   await ack();
 
   const slackUserId = body.user.id;
-  const { profile: profile } = await app.client.users.profile.get({
-    user: slackUserId,
-  });
   const channelId = body.response_urls[0].channel_id;
   const selectedOption =
     view.state.values[
@@ -118,30 +98,26 @@ app.view("kintai_start_modal", async ({ ack, body, view, client }) => {
         (value) => view.state.values[value].select_location_action !== undefined
       )[0]
     ].select_location_action.selected_option.value;
-  const msg = `${locations[selectedOption]} で業務開始します！`;
-
-  const date = new Date();
-  const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)
-    .toString()
-    .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`.replace(
-    /\n|\r/g,
-    ""
-  );
+  const msg = `${commonService.locations[selectedOption]} で${freeeService.TIME_CLOCK_TYPE.clock_in.text}します！${commonService.slackEmojiStatus.during_work}`;
 
   try {
+    const { profile: profile } = await app.client.users.profile.get({
+      user: slackUserId,
+    });
+
     await freeeService.postTimeClocks(
       slackUserId,
       freeeService.TIME_CLOCK_TYPE.clock_in.value
     );
 
-    await client.chat.postMessage({
+    client.chat.postMessage({
       username: profile.real_name_normalized,
       icon_url: profile.image_48,
       channel: channelId,
       text: msg,
     });
 
-    await client.chat.postMessage({
+    client.chat.postMessage({
       channel: slackUserId,
       text: channelId, // ButtonアクションにチャンネルIDを渡す
       blocks: [
@@ -149,7 +125,7 @@ app.view("kintai_start_modal", async ({ ack, body, view, client }) => {
           type: "section",
           text: {
             type: "mrkdwn",
-            text: "*" + formattedDate + "* :sunny:",
+            text: "*" + commonService.formatDate() + "* " + commonService.slackEmojiStatus.during_work,
           },
         },
         {
@@ -192,9 +168,10 @@ app.view("kintai_start_modal", async ({ ack, body, view, client }) => {
       ],
     });
 
-    await changeSlackEmojiStatus(slackEmojiStatus.during_work);
+    changeSlackEmojiStatus(commonService.slackEmojiStatus.during_work);
   } catch (err) {
     console.error(err);
+    client.chat.postMessage({ channel: slackUserId, text: ERROR_MSG });
   }
 });
 
@@ -212,13 +189,14 @@ app.action(
         slackUserId,
         freeeService.TIME_CLOCK_TYPE[actionId].value
       );
-      await say(`[打刻] *${freeeService.TIME_CLOCK_TYPE[actionId].text}*`);
+      say(`[打刻] *${freeeService.TIME_CLOCK_TYPE[actionId].text}*`);
 
-      await postTimeClocksMsg(slackUserId, channelId, actionId);
+      postTimeClocksMsg(slackUserId, channelId, actionId);
 
-      await changeSlackEmojiStatus(slackEmojiStatus.during_break);
+      changeSlackEmojiStatus(commonService.slackEmojiStatus.during_break);
     } catch (err) {
       console.error(err);
+      say(ERROR_MSG);
     }
   }
 );
@@ -237,13 +215,14 @@ app.action(
         slackUserId,
         freeeService.TIME_CLOCK_TYPE[actionId].value
       );
-      await say(`[打刻] *${freeeService.TIME_CLOCK_TYPE[actionId].text}*`);
+      say(`[打刻] *${freeeService.TIME_CLOCK_TYPE[actionId].text}*`);
 
-      await postTimeClocksMsg(slackUserId, channelId, actionId);
+      postTimeClocksMsg(slackUserId, channelId, actionId);
 
-      await changeSlackEmojiStatus(slackEmojiStatus.during_work);
+      changeSlackEmojiStatus(commonService.slackEmojiStatus.during_work);
     } catch (err) {
       console.error(err);
+      say(ERROR_MSG);
     }
   }
 );
@@ -262,14 +241,15 @@ app.action(
         slackUserId,
         freeeService.TIME_CLOCK_TYPE[actionId].value
       );
-      await say(`[打刻] *${freeeService.TIME_CLOCK_TYPE[actionId].text}*`);
-      await say("今日もお疲れ様でした :star2:");
+      say(`[打刻] *${freeeService.TIME_CLOCK_TYPE[actionId].text}*`);
+      say("今日もお疲れ様でした :star2:");
 
-      await postTimeClocksMsg(slackUserId, channelId, actionId);
+      postTimeClocksMsg(slackUserId, channelId, actionId);
 
-      await changeSlackEmojiStatus(slackEmojiStatus.after_work);
+      changeSlackEmojiStatus(commonService.slackEmojiStatus.after_work);
     } catch (err) {
       console.error(err);
+      say(ERROR_MSG);
     }
   }
 );
@@ -279,7 +259,7 @@ const postTimeClocksMsg = async (slackUserId, channelId, actionId) => {
     const { profile: profile } = await app.client.users.profile.get({
       user: slackUserId,
     });
-    const msg = `${freeeService.TIME_CLOCK_TYPE[actionId].text} します`;
+    const msg = `${freeeService.TIME_CLOCK_TYPE[actionId].text}`;
 
     await app.client.chat.postMessage({
       username: profile.real_name_normalized,

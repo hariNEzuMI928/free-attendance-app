@@ -1,3 +1,4 @@
+const commonService = require("./commonService");
 const FREEE_API_ENDPOINT = "https://api.freee.co.jp/hr/api/v1";
 const headers = {
   Accept: "application/json",
@@ -8,9 +9,9 @@ const headers = {
 module.exports = {
   TIME_CLOCK_TYPE: {
     clock_in: { value: "clock_in", text: "業務開始" },
-    break_begin: { value: "break_begin", text: "休憩開始" },
-    break_end: { value: "break_end", text: "休憩終了" },
-    clock_out: { value: "clock_out", text: "退勤" },
+    break_begin: { value: "break_begin", text: "休憩開始 " + commonService.slackEmojiStatus.during_break },
+    break_end: { value: "break_end", text: "休憩終了 " + commonService.slackEmojiStatus.during_work },
+    clock_out: { value: "clock_out", text: "退勤 " + commonService.slackEmojiStatus.after_work },
   },
 
   postTimeClocks: async (slackUserId, type) => {
@@ -19,7 +20,7 @@ module.exports = {
     const payload = {
       company_id: process.env.FREEEE_CAMPANY_ID,
       type: type,
-      datetime: formatDate(),
+      datetime: commonService.formatDate(true)
     };
     // payload.base_date = "2020/04/04"; // 退勤が翌日の場合はここに出勤日の日付を入れる // TODO: base_date を設定する条件を用意
 
@@ -45,12 +46,6 @@ module.exports = {
     return Promise.resolve();
   },
 };
-
-const formatDate = () => {
-  const d = new Date();
-  return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2)
-    + " " + ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2) + ":" + ("0" + d.getSeconds()).slice(-2) + "." + ("0" + d.getMilliseconds()).slice(-2);
-}
 
 const getFreeeIdBySlackId = async (slackId) => {
   const url = process.env.GET_FREEE_EMP_ID_BY_SLACK_ID
