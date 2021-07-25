@@ -93,8 +93,8 @@ app.view("kintai_start_modal", async ({ ack, body, view, client }) => {
 });
 
 const startKintaiModal = async (body, view, client) => {
+  const slackUserId = body.user.id;
   try {
-    const slackUserId = body.user.id;
     const channelId = body.response_urls[0].channel_id;
     const selectedOption =
       view.state.values[
@@ -113,14 +113,14 @@ const startKintaiModal = async (body, view, client) => {
       freeeService.TIME_CLOCK_TYPE.clock_in.value
     );
 
-    client.chat.postMessage({
+    await client.chat.postMessage({
       username: profile.real_name_normalized,
       icon_url: profile.image_48,
       channel: channelId,
       text: msg,
     });
 
-    client.chat.postMessage({
+    await client.chat.postMessage({
       channel: slackUserId,
       text: channelId, // ButtonアクションにチャンネルIDを渡す
       blocks: [
@@ -171,7 +171,7 @@ const startKintaiModal = async (body, view, client) => {
       ],
     });
 
-    changeSlackEmojiStatus(commonService.slackEmojiStatus.during_work);
+    await changeSlackEmojiStatus(commonService.slackEmojiStatus.during_work);
   } catch (err) {
     console.error(err);
     client.chat.postMessage({ channel: slackUserId, text: ERROR_MSG });
@@ -183,24 +183,7 @@ app.action(
   async ({ body, ack, say }) => {
     await ack();
 
-    const actionId = body.actions[0].action_id;
-    const slackUserId = body.user.id;
-    const channelId = body.message.text;
-
-    try {
-      await freeeService.postTimeClocks(
-        slackUserId,
-        freeeService.TIME_CLOCK_TYPE[actionId].value
-      );
-      say(`[打刻] *${freeeService.TIME_CLOCK_TYPE[actionId].text}*`);
-
-      postTimeClocksMsg(slackUserId, channelId, actionId);
-
-      changeSlackEmojiStatus(commonService.slackEmojiStatus.during_break);
-    } catch (err) {
-      console.error(err);
-      say(ERROR_MSG);
-    }
+    postSlackTimeClocks(body, say, commonService.slackEmojiStatus.during_break);
   }
 );
 
@@ -209,53 +192,44 @@ app.action(
   async ({ body, ack, say }) => {
     await ack();
 
-    const actionId = body.actions[0].action_id;
-    const slackUserId = body.user.id;
-    const channelId = body.message.text;
-
-    try {
-      await freeeService.postTimeClocks(
-        slackUserId,
-        freeeService.TIME_CLOCK_TYPE[actionId].value
-      );
-      say(`[打刻] *${freeeService.TIME_CLOCK_TYPE[actionId].text}*`);
-
-      postTimeClocksMsg(slackUserId, channelId, actionId);
-
-      changeSlackEmojiStatus(commonService.slackEmojiStatus.during_work);
-    } catch (err) {
-      console.error(err);
-      say(ERROR_MSG);
-    }
+    postSlackTimeClocks(body, say, commonService.slackEmojiStatus.during_work);
   }
 );
+
 
 app.action(
   freeeService.TIME_CLOCK_TYPE.clock_out.value,
   async ({ body, ack, say }) => {
     await ack();
 
-    const actionId = body.actions[0].action_id;
-    const slackUserId = body.user.id;
-    const channelId = body.message.text;
-
-    try {
-      await freeeService.postTimeClocks(
-        slackUserId,
-        freeeService.TIME_CLOCK_TYPE[actionId].value
-      );
-      say(`[打刻] *${freeeService.TIME_CLOCK_TYPE[actionId].text}*`);
-      say("今日もお疲れ様でした :star2:");
-
-      postTimeClocksMsg(slackUserId, channelId, actionId);
-
-      changeSlackEmojiStatus(commonService.slackEmojiStatus.after_work);
-    } catch (err) {
-      console.error(err);
-      say(ERROR_MSG);
-    }
+    postSlackTimeClocks(body, say, commonService.slackEmojiStatus.after_work);
   }
 );
+
+const postSlackTimeClocks = async (body, say, slackEmojiStatus) => {
+  const actionId = body.actions[0].action_id;
+  const slackUserId = body.user.id;
+  const channelId = body.message.text;
+
+  try {
+    await freeeService.postTimeClocks(
+      slackUserId,
+      freeeService.TIME_CLOCK_TYPE[actionId].value
+    );
+    await say(`[打刻] *${freeeService.TIME_CLOCK_TYPE[actionId].text}*`);
+
+    await postTimeClocksMsg(slackUserId, channelId, actionId);
+
+    await changeSlackEmojiStatus(slackEmojiStatus);
+
+    if (slackEmojiStatus === commonService.slackEmojiStatus.after_work) {
+      await say("今日もお疲れ様でした :star2:");
+    }
+  } catch (err) {
+    console.error(err);
+    await say(ERROR_MSG);
+  }
+}
 
 const postTimeClocksMsg = async (slackUserId, channelId, actionId) => {
   try {
