@@ -1,12 +1,17 @@
-const { App } = require("@slack/bolt");
+const { App, AwsLambdaReceiver } = require("@slack/bolt");
 require("dotenv").config();
 fetch = require("node-fetch");
 const freeeService = require("./freeeService");
 const commonService = require("./commonService");
 
+const awsLambdaReceiver = new AwsLambdaReceiver({
+  signingSecret: process.env.SLACK_SIGNING_SECRET,
+});
+
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   signingSecret: process.env.SLACK_SIGNING_SECRET,
+  receiver: awsLambdaReceiver,
   processBeforeResponse: true,
 });
 
@@ -264,8 +269,12 @@ const changeSlackEmojiStatus = async (status_emoji) => {
   }
 };
 
+module.exports.handler = async (event, context, callback) => {
+  const handler = await app.start();
+  return handler(event, context, callback);
+}
+
 (async () => {
-  // Start your app
   await app.start(process.env.PORT || 3030);
 
   console.log("⚡️ Bolt app is running!");

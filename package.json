@@ -1,12 +1,14 @@
 {
   "name": "free-attendance-app",
   "version": "1.0.0",
-  "description": "",
+  "description": "free-attendance-app",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "ngrok": "ngrok http 3000",
     "local": "node_modules/.bin/nodemon app.js",
-    "start": "node app.js"
+    "start": "node app.js",
+    "deploy": "npx serverless deploy"
   },
   "repository": {
     "type": "git",
@@ -19,11 +21,14 @@
   },
   "homepage": "https://github.com/hariNEzuMI928/free-attendance-app#readme",
   "dependencies": {
-    "@slack/bolt": "^3.4.1"
+    "@slack/bolt": "^3.4.1",
+    "node-fetch": "^2.6.1",
+    "dotenv": "^10.0.0",
+    "serverless": "^2.52.1",
+    "serverless-dotenv-plugin": "^3.9.0"
   },
   "devDependencies": {
-    "dotenv": "^10.0.0",
-    "node-fetch": "^2.6.1",
-    "nodemon": "^2.0.12"
+    "nodemon": "^2.0.12",
+    "serverless-offline": "^7.0.0"
   }
 }

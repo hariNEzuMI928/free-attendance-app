@@ -1,0 +1,17 @@
+service: free-attendance-app
+frameworkVersion: "2"
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+functions:
+  slack:
+    handler: app.handler
+    events:
+      - http:
+          path: slack/events
+          method: ANY
+useDotenv: true
+plugins:
+  - serverless-offline
+  - serverless-dotenv-plugin

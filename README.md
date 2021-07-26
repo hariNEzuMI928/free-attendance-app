@@ -10,6 +10,8 @@ $ export SLACK_BOT_TOKEN=xoxb-xxxxxxxxxxxx
 $ ngrok http 3030
 $ node_modules/.bin/nodemon app.js # develop
 $ node app.js
+
+$ npx serverless offline --noPrependStageInUrl # serverless
 ```
 
 http://xxxxxxxxxxxx.ngrok.io/slack/events
@@ -37,3 +39,12 @@ https://slack.dev/bolt-js/ja-jp/tutorial/getting-started
     2. [x] Fetch APIで情報を取得する
 12. [ ] 他のユーザーの勤怠を登録できるトークンを取得
 13. [ ] FaasSデプロイ
+    1.  [ ] `aws configure` , IAMを決める
+14. [x] ローカルで勤怠モーダルを送信したときにエラーが起こる
+15. [ ] handle切り出し
+16. [ ] kibela書く
+17. [ ] GSSにID書いていない人のためのエラー
+18. [ ] Jest
+19. [ ] Import
+20. [ ] TypeScript
+21. [ ] Github Actions
