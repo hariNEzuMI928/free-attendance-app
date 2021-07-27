@@ -18,20 +18,18 @@ module.exports = {
     // payload.base_date = "2020/04/04"; // 退勤が翌日の場合はここに出勤日の日付を入れる // TODO: base_date を設定する条件を用意
 
     try {
-      const response = await fetch(FREEE_API_ENDPOINT + uri, {
+      const response = await (await fetch(FREEE_API_ENDPOINT + uri, {
         method: "POST",
         headers: headers,
         body: JSON.stringify(payload),
-      });
-      const responseData = await response.json();
+      })).json();
 
       if (
-        !responseData.employee_time_clock ||
-        !responseData.employee_time_clock.id
+        !response.employee_time_clock ||
+        !response.employee_time_clock.id
       ) {
-        return Promise.reject(
-          "postTimeClocks fail : " + JSON.stringify(responseData)
-        );
+        const errMsg = await createErrMsg(response?.message, freeeEmpId);
+        return Promise.reject(errMsg);
       }
     } catch (err) {
       return Promise.reject(err);
@@ -58,3 +56,40 @@ const getFreeeIdBySlackId = async (slackId) => {
     return Promise.reject(err);
   }
 };
+
+const createErrMsg = async (message, freeeEmpId) => {
+  if (!message) return "";
+
+  let errMsg = "[ERR] ";
+
+  if (message !== "打刻の種類が正しくありません。") {
+    errMsg += "開発者に連絡してください。\nエラーメッセージ：「" + message + "」";
+    return errMsg
+  }
+
+  const availableTypes = await getAvailableTypes(freeeEmpId);
+  if (availableTypes.available_types.length === 1 && availableTypes.available_types[0] === commonService.TIME_CLOCK_TYPE.clock_in.value) {
+    errMsg += "今日の業務は終了しました！";
+    errMsg += "再度出勤する場合は、勤怠チャンネルのショートカットから投稿してください。";
+  } else {
+    errMsg += "選択可能なアクションは、";
+    availableTypes.available_types.forEach(type => {
+      errMsg += "「" + commonService.TIME_CLOCK_TYPE[type].text + "」";
+    });
+    errMsg += "です！";
+  }
+  errMsg += "修正する場合はFreeeから編集してください。";
+
+  return errMsg;
+}
+
+const getAvailableTypes = async (freeeEmpId) => {
+  const uri = "/employees/" + freeeEmpId + "/time_clocks/available_types"
+    + `?company_id=${process.env.FREEEE_CAMPANY_ID}&emp_id=${freeeEmpId}&date=${commonService.formatDate()}`;
+  const response = await (await fetch(FREEE_API_ENDPOINT + uri, {
+    method: "GET",
+    headers: headers,
+  })).json();
+
+  return response;
+}

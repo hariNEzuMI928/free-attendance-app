@@ -17,7 +17,7 @@ module.exports = {
   // YYYY-MM-DD HH:MM:SS
   formatDate: (includeTime) => {
     const d = new Date();
-    // const d = new Date('2020-05-04 ' + new Date().toLocaleTimeString("en-GB")); // dev
+    // const d = new Date('2020-05-05 ' + new Date().toLocaleTimeString("en-GB")); // dev
 
     const date = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
 

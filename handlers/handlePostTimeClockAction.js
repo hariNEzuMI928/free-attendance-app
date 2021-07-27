@@ -39,8 +39,7 @@ const postTimeClockAction = async (body, say, client) => {
             await say("今日もお疲れ様でした :star2:");
         }
     } catch (err) {
-        console.error(err);
-        await say("[ERR] 打刻に失敗しました:cry:");
+        await say(err);
     }
 }
 

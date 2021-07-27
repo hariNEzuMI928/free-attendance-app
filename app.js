@@ -2,7 +2,6 @@ const { App, AwsLambdaReceiver } = require("@slack/bolt");
 require("dotenv").config();
 fetch = require("node-fetch");
 
-const freeeService = require("./services/freeeService");
 const commonService = require("./services/commonService");
 const handleStartAttendanceModal = require("./handlers/handleStartAttendanceModal");
 const handleStartAttendanceShortcut = require("./handlers/handleStartAttendanceShortcut");
