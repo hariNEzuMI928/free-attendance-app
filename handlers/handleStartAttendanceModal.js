@@ -19,7 +19,7 @@ const startKintaiModal = async (body, view, client) => {
             view.state.values[value].select_location_action !== undefined
         )[0]
       ].select_location_action.selected_option.value;
-    const msg = `${commonService.locations[selectedOption]} で${freeeService.TIME_CLOCK_TYPE.clock_in.text}します！${commonService.slackEmojiStatus.during_work}`;
+    const msg = `${commonService.locations[selectedOption]} で${commonService.TIME_CLOCK_TYPE.clock_in.text}します！${commonService.TIME_CLOCK_TYPE.clock_in.emoji}`;
 
     const { profile: profile } = await client.users.profile.get({
       user: slackUserId,
@@ -27,7 +27,7 @@ const startKintaiModal = async (body, view, client) => {
 
     await freeeService.postTimeClocks(
       slackUserId,
-      freeeService.TIME_CLOCK_TYPE.clock_in.value
+      commonService.TIME_CLOCK_TYPE.clock_in.value
     );
 
     await client.chat.postMessage({
@@ -49,7 +49,7 @@ const startKintaiModal = async (body, view, client) => {
               "*" +
               commonService.formatDate() +
               "* " +
-              commonService.slackEmojiStatus.during_work,
+              commonService.TIME_CLOCK_TYPE.clock_in.emoji,
           },
         },
         {
@@ -60,32 +60,32 @@ const startKintaiModal = async (body, view, client) => {
               text: {
                 type: "plain_text",
                 emoji: true,
-                text: freeeService.TIME_CLOCK_TYPE.break_begin.text,
+                text: commonService.TIME_CLOCK_TYPE.break_begin.text + commonService.TIME_CLOCK_TYPE.break_begin.emoji,
               },
               style: "primary",
-              value: freeeService.TIME_CLOCK_TYPE.break_begin.value,
-              action_id: freeeService.TIME_CLOCK_TYPE.break_begin.value,
+              value: commonService.TIME_CLOCK_TYPE.break_begin.value,
+              action_id: commonService.TIME_CLOCK_TYPE.break_begin.value,
             },
             {
               type: "button",
               text: {
                 type: "plain_text",
                 emoji: true,
-                text: freeeService.TIME_CLOCK_TYPE.break_end.text,
+                text: commonService.TIME_CLOCK_TYPE.break_end.text + commonService.TIME_CLOCK_TYPE.break_end.emoji,
               },
-              value: freeeService.TIME_CLOCK_TYPE.break_end.value,
-              action_id: freeeService.TIME_CLOCK_TYPE.break_end.value,
+              value: commonService.TIME_CLOCK_TYPE.break_end.value,
+              action_id: commonService.TIME_CLOCK_TYPE.break_end.value,
             },
             {
               type: "button",
               text: {
                 type: "plain_text",
                 emoji: true,
-                text: freeeService.TIME_CLOCK_TYPE.clock_out.text,
+                text: commonService.TIME_CLOCK_TYPE.clock_out.text + commonService.TIME_CLOCK_TYPE.clock_out.emoji,
               },
               style: "danger",
-              value: freeeService.TIME_CLOCK_TYPE.clock_out.value,
-              action_id: freeeService.TIME_CLOCK_TYPE.clock_out.value,
+              value: commonService.TIME_CLOCK_TYPE.clock_out.value,
+              action_id: commonService.TIME_CLOCK_TYPE.clock_out.value,
             },
           ],
         },
@@ -94,7 +94,7 @@ const startKintaiModal = async (body, view, client) => {
 
     await client.users.profile.set({
       token: process.env.SLACK_USER_TOKEN,
-      profile: { status_emoji: commonService.slackEmojiStatus.during_work },
+      profile: { status_emoji: commonService.TIME_CLOCK_TYPE.clock_in.emoji },
     });
   } catch (err) {
     console.error(err);

@@ -7,13 +7,6 @@ const headers = {
 };
 
 module.exports = {
-  TIME_CLOCK_TYPE: {
-    clock_in: { value: "clock_in", text: "業務開始" },
-    break_begin: { value: "break_begin", text: "休憩開始 " + commonService.slackEmojiStatus.during_break },
-    break_end: { value: "break_end", text: "休憩終了 " + commonService.slackEmojiStatus.during_work },
-    clock_out: { value: "clock_out", text: "退勤 " + commonService.slackEmojiStatus.after_work },
-  },
-
   postTimeClocks: async (slackUserId, type) => {
     const freeeEmpId = await getFreeeIdBySlackId(slackUserId);
     const uri = "/employees/" + freeeEmpId + "/time_clocks";
