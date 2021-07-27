@@ -43,8 +43,8 @@ https://slack.dev/bolt-js/ja-jp/tutorial/getting-started
 14. [x] ローカルで勤怠モーダルを送信したときにエラーが起こる
 15. [ ] handle切り出し
 16. [ ] kibela書く
-17. [ ] GSSにID書いていない人のためのエラー
-18. [ ] Jest
-19. [ ] Import
-20. [ ] TypeScript
-21. [ ] Github Actions
+17. [ ] Jest
+18. [ ] Import
+19. [ ] TypeScript
+20. [ ] Github Actionsでdeploy
+22. [ ] DBをDynamoなどに変更
