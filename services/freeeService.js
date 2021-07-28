@@ -28,7 +28,7 @@ module.exports = {
         !response.employee_time_clock ||
         !response.employee_time_clock.id
       ) {
-        const errMsg = await createErrMsg(response?.message, freeeEmpId);
+        const errMsg = await createErrMsg(response, freeeEmpId);
         return Promise.reject(errMsg);
       }
     } catch (err) {
@@ -57,20 +57,21 @@ const getFreeeIdBySlackId = async (slackId) => {
   }
 };
 
-const createErrMsg = async (message, freeeEmpId) => {
+const createErrMsg = async (response, freeeEmpId) => {
+  const message = response?.message;
   if (!message) return "";
 
   let errMsg = "[ERR] ";
 
   if (message !== "打刻の種類が正しくありません。") {
-    errMsg += "開発者に連絡してください。\nエラーメッセージ：「" + message + "」";
+    errMsg += "開発者に連絡してください。\nエラーメッセージ：「" + JSON.stringify(response) + "」";
     return errMsg
   }
 
   const availableTypes = await getAvailableTypes(freeeEmpId);
   if (availableTypes.available_types.length === 1 && availableTypes.available_types[0] === commonService.TIME_CLOCK_TYPE.clock_in.value) {
-    errMsg += "今日の業務は終了しました！";
-    errMsg += "再度出勤する場合は、勤怠チャンネルのショートカットから投稿してください。";
+    errMsg += "本日の業務は終了しました！";
+    errMsg += "再度出勤する場合は、Slackの「⚡️」マークから勤怠を登録してください。";
   } else {
     errMsg += "選択可能なアクションは、";
     availableTypes.available_types.forEach(type => {
@@ -78,7 +79,7 @@ const createErrMsg = async (message, freeeEmpId) => {
     });
     errMsg += "です！";
   }
-  errMsg += "修正する場合はFreeeから編集してください。";
+  errMsg += "勤怠を修正する場合はFreeeから編集してください。";
 
   return errMsg;
 }

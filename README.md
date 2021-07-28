@@ -47,4 +47,4 @@ https://slack.dev/bolt-js/ja-jp/tutorial/getting-started
 18. [ ] Import
 19. [ ] TypeScript
 20. [ ] Github Actionsでdeploy
-22. [ ] DBをDynamoなどに変更
+22. [ ] DBをDynamoなどに変更、SlAckIDを登録していなかったときのエラー
