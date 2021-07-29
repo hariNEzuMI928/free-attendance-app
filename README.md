@@ -47,4 +47,7 @@ https://slack.dev/bolt-js/ja-jp/tutorial/getting-started
 18. [ ] Import
 19. [ ] TypeScript
 20. [ ] Github Actionsでdeploy
-22. [ ] DBをDynamoなどに変更、SlAckIDを登録していなかったときのエラー
+22. [ ] DBをDynamoなどに変更
+    1.  [ ] SlAckIDを登録していなかったときのエラー
+    2.  [ ] 登録できるようにしたら、解除フローも用意しておかないと面倒
+23. [ ] どうやっても他の人の勤怠を登録・編集できないようにする
