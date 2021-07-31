@@ -1,5 +1,5 @@
 const commonService = require("./commonService");
-const FREEE_API_ENDPOINT = "https://api.freee.co.jp/hr/api/v1";
+const FREEE_API_ENDPOINT = "https://api.freee.co.jp/hr/api/v1/";
 const headers = {
   Accept: "application/json",
   Authorization: "Bearer " + process.env.FREEE_API_ACCESS_TOKEN,
@@ -7,9 +7,9 @@ const headers = {
 };
 
 module.exports = {
-  postTimeClocks: async (slackUserId, type) => {
-    const freeeEmpId = await getFreeeIdBySlackId(slackUserId);
-    const uri = "/employees/" + freeeEmpId + "/time_clocks";
+  postTimeClocks: async (email, type) => {
+    const freeeEmpId = await getFreeeIdByEmail(email);
+    const uri = "employees/" + freeeEmpId + "/time_clocks";
     const payload = {
       company_id: process.env.FREEEE_CAMPANY_ID,
       type: type,
@@ -29,33 +29,38 @@ module.exports = {
         !response.employee_time_clock.id
       ) {
         const errMsg = await createErrMsg(response, freeeEmpId);
-        return Promise.reject(errMsg);
+        throw new Error(errMsg)
       }
     } catch (err) {
       return Promise.reject(err);
     }
-    return Promise.resolve();
   },
 };
 
-const getFreeeIdBySlackId = async (slackId) => {
-  const url = process.env.GET_FREEE_EMP_ID_BY_SLACK_ID
-    + `?token=${process.env.GAS_TOKEN}&slack_id=${slackId}`;
+const getAllEmployees = async () => {
+  const uri = `companies/${process.env.FREEEE_CAMPANY_ID}/employees`;
+  const response = await (await fetch(FREEE_API_ENDPOINT + uri, {
+    method: "GET",
+    headers: headers,
+  })).json();
+
+  return response;
+}
+
+const getFreeeIdByEmail = async (email) => {
   try {
-    const response = await fetch(url, {
-      method: "GET",
-    });
-    const responseData = await response.json();
+    const allEmployees = await getAllEmployees();
+    const employees = allEmployees.find(employee => employee.email === email);
 
-    if (responseData?.ok === false) {
-      return Promise.reject("FreeeのIDが取得できません。");
+    if (employees?.id) {
+      throw new Error("freeeのアカウントが取得できません。メールアドレスを確認してください。")
     }
-    return responseData?.freee_emp_id;
-
+    return employees.id;
   } catch (err) {
+    console.log(1);
     return Promise.reject(err);
   }
-};
+}
 
 const createErrMsg = async (response, freeeEmpId) => {
   const message = response?.message;
@@ -79,14 +84,15 @@ const createErrMsg = async (response, freeeEmpId) => {
     });
     errMsg += "です！";
   }
-  errMsg += "勤怠を修正する場合はFreeeから編集してください。";
+  errMsg += "勤怠を修正する場合はfreeeから編集してください。";
 
   return errMsg;
 }
 
 const getAvailableTypes = async (freeeEmpId) => {
-  const uri = "/employees/" + freeeEmpId + "/time_clocks/available_types"
+  const uri = "employees/" + freeeEmpId + "/time_clocks/available_types"
     + `?company_id=${process.env.FREEEE_CAMPANY_ID}&emp_id=${freeeEmpId}&date=${commonService.formatDate()}`;
+
   const response = await (await fetch(FREEE_API_ENDPOINT + uri, {
     method: "GET",
     headers: headers,

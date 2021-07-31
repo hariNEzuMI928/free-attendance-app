@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "local": "node_modules/.bin/nodemon app.js",
     "start": "node app.js",
-    "deploy": "npx serverless deploy"
+    "deploy": "npx sls deploy"
   },
   "repository": {
     "type": "git",
