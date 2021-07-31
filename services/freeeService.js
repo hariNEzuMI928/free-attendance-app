@@ -52,12 +52,11 @@ const getFreeeIdByEmail = async (email) => {
     const allEmployees = await getAllEmployees();
     const employees = allEmployees.find(employee => employee.email === email);
 
-    if (employees?.id) {
+    if (!employees?.id) {
       throw new Error("freeeのアカウントが取得できません。メールアドレスを確認してください。")
     }
     return employees.id;
   } catch (err) {
-    console.log(1);
     return Promise.reject(err);
   }
 }
