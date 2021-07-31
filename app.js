@@ -7,14 +7,12 @@ const handleStartAttendanceModal = require("./handlers/handleStartAttendanceModa
 const handleStartAttendanceShortcut = require("./handlers/handleStartAttendanceShortcut");
 const handlePostTimeClockAction = require("./handlers/handlePostTimeClockAction");
 
-const awsLambdaReceiver = new AwsLambdaReceiver({
-  signingSecret: process.env.SLACK_SIGNING_SECRET,
-});
-
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
-  signingSecret: process.env.SLACK_SIGNING_SECRET,
-  receiver: awsLambdaReceiver,
+  // signingSecret: process.env.SLACK_SIGNING_SECRET,
+  receiver: new AwsLambdaReceiver({
+    signingSecret: process.env.SLACK_SIGNING_SECRET
+  }),
   processBeforeResponse: true,
 });
 

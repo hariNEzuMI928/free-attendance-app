@@ -5,11 +5,13 @@ const handleStartAttendanceModal = async ({ ack, body, view, client }) => {
   await ack();
 
   // Slack側でタイムアウトにならないように別関数に切り出す
-  startKintaiModal(body, view, client);
+  await startKintaiModal(body, view, client);
 };
 
 const startKintaiModal = async (body, view, client) => {
   const slackUserId = body.user.id;
+  const promise = [];
+
   try {
     const channelId = body.response_urls[0].channel_id;
     const selectedOption =
@@ -30,14 +32,14 @@ const startKintaiModal = async (body, view, client) => {
       commonService.TIME_CLOCK_TYPE.clock_in.value
     );
 
-    await client.chat.postMessage({
+    promise.push(client.chat.postMessage({
       username: profile.real_name_normalized,
       icon_url: profile.image_48,
       channel: channelId,
       text: msg,
-    });
+    }));
 
-    await client.chat.postMessage({
+    promise.push(client.chat.postMessage({
       channel: slackUserId,
       text: channelId, // ButtonアクションにチャンネルIDを渡す
       blocks: [
@@ -90,16 +92,18 @@ const startKintaiModal = async (body, view, client) => {
           ],
         },
       ],
-    });
+    }));
 
-    await client.users.profile.set({
+    promise.push(client.users.profile.set({
       token: process.env.SLACK_USER_TOKEN,
       profile: { status_emoji: commonService.TIME_CLOCK_TYPE.clock_in.emoji },
-    });
+    }));
   } catch (err) {
     console.error(err);
-    client.chat.postMessage({ channel: slackUserId, text: "[ERR] 打刻に失敗しました:cry:" });
+    promise.push(client.chat.postMessage({ channel: slackUserId, text: "[ERR] 打刻に失敗しました:cry:" }));
   }
+
+  await Promise.all(promise);
 }
 
 module.exports = handleStartAttendanceModal;
