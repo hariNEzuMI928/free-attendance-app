@@ -29,7 +29,7 @@ const postTimeClockAction = async (body, say, client) => {
             username: profile.real_name_normalized,
             icon_url: profile.image_48,
             channel: channelId,
-            text: `${clockTypeObject.text} ! ${clockTypeObject.emoji}`,
+            text: `${clockTypeObject.text} ! ${clockTypeObject.emoji} (${profile.display_name})`,
         }));
 
         promise.push(client.users.profile.set({

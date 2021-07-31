@@ -21,7 +21,6 @@ const startKintaiModal = async (body, view, client) => {
             view.state.values[value].select_location_action !== undefined
         )[0]
       ].select_location_action.selected_option.value;
-    const msg = `${commonService.locations[selectedOption]} で${commonService.TIME_CLOCK_TYPE.clock_in.text}します！${commonService.TIME_CLOCK_TYPE.clock_in.emoji}`;
 
     const { profile: profile } = await client.users.profile.get({
       user: slackUserId,
@@ -31,6 +30,8 @@ const startKintaiModal = async (body, view, client) => {
       profile.email,
       commonService.TIME_CLOCK_TYPE.clock_in.value
     );
+
+    const msg = `${commonService.locations[selectedOption]} で${commonService.TIME_CLOCK_TYPE.clock_in.text}します！${commonService.TIME_CLOCK_TYPE.clock_in.emoji} (${profile.display_name})`;
 
     promise.push(client.chat.postMessage({
       username: profile.real_name_normalized,
