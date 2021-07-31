@@ -1,4 +1,4 @@
-const freeeService = require("../services/freeeService");
+// const freeeService = require("../services/freeeService");
 const commonService = require("../services/commonService");
 
 const handleStartAttendanceModal = async ({ ack, body, view, client }) => {
@@ -27,10 +27,10 @@ const startKintaiModal = async (body, view, client) => {
       user: slackUserId,
     });
 
-    await freeeService.postTimeClocks(
-      slackUserId,
-      commonService.TIME_CLOCK_TYPE.clock_in.value
-    );
+    // await freeeService.postTimeClocks(
+    //   slackUserId,
+    //   commonService.TIME_CLOCK_TYPE.clock_in.value
+    // );
 
     promise.push(client.chat.postMessage({
       username: profile.real_name_normalized,

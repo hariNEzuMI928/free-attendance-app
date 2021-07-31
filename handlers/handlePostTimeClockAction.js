@@ -1,4 +1,4 @@
-const freeeService = require("../services/freeeService");
+// const freeeService = require("../services/freeeService");
 const commonService = require("../services/commonService");
 
 const handlePostTimeClockAction = async ({ body, ack, say, client }) => {
@@ -17,7 +17,7 @@ const postTimeClockAction = async (body, say, client) => {
     const clockTypeObject = commonService.TIME_CLOCK_TYPE[actionId];
 
     try {
-        await freeeService.postTimeClocks(slackUserId, clockTypeObject.value);
+        // await freeeService.postTimeClocks(slackUserId, clockTypeObject.value);
 
         const { profile: profile } = await client.users.profile.get({
             user: slackUserId,
