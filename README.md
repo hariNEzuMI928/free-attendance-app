@@ -45,4 +45,4 @@ https://slack.dev/bolt-js/ja-jp/tutorial/getting-started
 22. [ ] どうやっても他の人の勤怠を登録・編集できないようにする
 23. [x] デプロイするときに runtime を指定
 24. [ ] envファイルを分ける
-25. [ ] エラー処理共通化
+25. [x] エラー処理共通化

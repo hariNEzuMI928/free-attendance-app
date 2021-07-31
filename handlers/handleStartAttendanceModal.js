@@ -1,4 +1,4 @@
-// const freeeService = require("../services/freeeService");
+const freeeService = require("../services/freeeService");
 const commonService = require("../services/commonService");
 
 const handleStartAttendanceModal = async ({ ack, body, view, client }) => {
@@ -27,10 +27,10 @@ const startKintaiModal = async (body, view, client) => {
       user: slackUserId,
     });
 
-    // await freeeService.postTimeClocks(
-    //   slackUserId,
-    //   commonService.TIME_CLOCK_TYPE.clock_in.value
-    // );
+    await freeeService.postTimeClocks(
+      profile.email,
+      commonService.TIME_CLOCK_TYPE.clock_in.value
+    );
 
     promise.push(client.chat.postMessage({
       username: profile.real_name_normalized,
@@ -98,9 +98,8 @@ const startKintaiModal = async (body, view, client) => {
       token: process.env.SLACK_USER_TOKEN,
       profile: { status_emoji: commonService.TIME_CLOCK_TYPE.clock_in.emoji },
     }));
-  } catch (err) {
-    console.error(err);
-    promise.push(client.chat.postMessage({ channel: slackUserId, text: "[ERR] 打刻に失敗しました:cry:" }));
+  } catch (error) {
+    promise.push(commonService.handleError({ client: client, error: error, channel: slackUserId }));
   }
 
   await Promise.all(promise);

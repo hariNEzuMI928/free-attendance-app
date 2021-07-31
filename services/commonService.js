@@ -24,10 +24,29 @@ module.exports = {
   // YYYY-MM-DD HH:MM:SS
   formatDate: (includeTime) => {
     const d = new Date();
-    // const d = new Date('2020-05-13 ' + new Date().toLocaleTimeString("en-GB")); // dev
+    // const d = new Date('2020-05-20 ' + new Date().toLocaleTimeString("en-GB")); // dev
 
     const date = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
 
     return includeTime ? date + " " + d.toLocaleTimeString("en-GB") : date;
   },
+
+  handleError: async ({ client: client, error: error, channel: slackUserId }) => {
+    // console.error(error);
+
+    const head = '[ERR] ';
+    const text = head + error?.message || error;
+
+    await client.chat.postMessage({
+      channel: slackUserId,
+      text: text,
+      blocks: [{
+        type: "context",
+        elements: [{
+          type: "mrkdwn",
+          text: text,
+        }]
+      }]
+    });
+  }
 };

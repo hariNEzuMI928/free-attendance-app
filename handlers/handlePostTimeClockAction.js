@@ -23,14 +23,14 @@ const postTimeClockAction = async (body, say, client) => {
 
         await freeeService.postTimeClocks(profile.email, clockTypeObject.value);
 
+        promise.push(say(`[打刻] *${clockTypeObject.text}* ${clockTypeObject.emoji}`));
+
         promise.push(client.chat.postMessage({
             username: profile.real_name_normalized,
             icon_url: profile.image_48,
             channel: channelId,
             text: `${clockTypeObject.text} ! ${clockTypeObject.emoji}`,
         }));
-
-        promise.push(say(`[打刻] *${clockTypeObject.text}* ${clockTypeObject.emoji}`));
 
         promise.push(client.users.profile.set({
             token: process.env.SLACK_USER_TOKEN,
@@ -40,8 +40,8 @@ const postTimeClockAction = async (body, say, client) => {
         if (actionId === commonService.TIME_CLOCK_TYPE.clock_out.value) {
             promise.push((say("今日もお疲れ様でした :star2:")));
         }
-    } catch (err) {
-        promise.push(say(err.message));
+    } catch (error) {
+        promise.push(commonService.handleError({ client: client, error: error, channel: slackUserId }));
     }
 
     await Promise.all(promise);
