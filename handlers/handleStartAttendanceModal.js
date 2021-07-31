@@ -62,7 +62,7 @@ const startKintaiModal = async (body, view, client) => {
               text: {
                 type: "plain_text",
                 emoji: true,
-                text: commonService.TIME_CLOCK_TYPE.break_begin.text + commonService.TIME_CLOCK_TYPE.break_begin.emoji,
+                text: commonService.TIME_CLOCK_TYPE.break_begin.text + " " + commonService.TIME_CLOCK_TYPE.break_begin.emoji,
               },
               style: "primary",
               value: commonService.TIME_CLOCK_TYPE.break_begin.value,
@@ -73,7 +73,7 @@ const startKintaiModal = async (body, view, client) => {
               text: {
                 type: "plain_text",
                 emoji: true,
-                text: commonService.TIME_CLOCK_TYPE.break_end.text + commonService.TIME_CLOCK_TYPE.break_end.emoji,
+                text: commonService.TIME_CLOCK_TYPE.break_end.text + " " + commonService.TIME_CLOCK_TYPE.break_end.emoji,
               },
               value: commonService.TIME_CLOCK_TYPE.break_end.value,
               action_id: commonService.TIME_CLOCK_TYPE.break_end.value,
@@ -83,7 +83,7 @@ const startKintaiModal = async (body, view, client) => {
               text: {
                 type: "plain_text",
                 emoji: true,
-                text: commonService.TIME_CLOCK_TYPE.clock_out.text + commonService.TIME_CLOCK_TYPE.clock_out.emoji,
+                text: commonService.TIME_CLOCK_TYPE.clock_out.text + " " + commonService.TIME_CLOCK_TYPE.clock_out.emoji,
               },
               style: "danger",
               value: commonService.TIME_CLOCK_TYPE.clock_out.value,
