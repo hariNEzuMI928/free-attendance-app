@@ -35,10 +35,10 @@ https://slack.dev/bolt-js/ja-jp/tutorial/getting-started
     1. [x] アプリから GAS にアクセスする、 {"message":"アクセス権限がありません。"}を回避する
     2. [x] Fetch API で情報を取得する
 13. [ ] 他のユーザーの勤怠を登録できるトークンを取得
-14. [ ] FaasS デプロイ
-    1. [ ] `aws configure` , IAM を決める
+14. [x] FaasS デプロイ
+    1. [x] `aws configure` , IAM を決める
 15. [x] ローカルで勤怠モーダルを送信したときにエラーが起こる
-16. [ ] handle 切り出し
+16. [x] handle 切り出し
 17. [ ] kibela 書く
 18. [ ] Jest
 19. [ ] Import
@@ -49,3 +49,4 @@ https://slack.dev/bolt-js/ja-jp/tutorial/getting-started
     2. [ ] 登録できるようにしたら、解除フローも用意しておかないと面倒
 23. [ ] どうやっても他の人の勤怠を登録・編集できないようにする
 24. [x] デプロイするときに runtime を指定
+25. [ ] envファイルを分ける
