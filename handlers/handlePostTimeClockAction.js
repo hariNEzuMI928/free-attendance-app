@@ -1,4 +1,4 @@
-const freeeService = require("../services/freeeService");
+// const freeeService = require("../services/freeeService");
 const commonService = require("../services/commonService");
 
 const handlePostTimeClockAction = async ({ body, ack, say, client }) => {
@@ -21,7 +21,7 @@ const postTimeClockAction = async (body, say, client) => {
             user: slackUserId,
         });
 
-        await freeeService.postTimeClocks(profile.email, clockTypeObject.value);
+        // await freeeService.postTimeClocks(profile.email, clockTypeObject.value);
 
         promise.push(say(`[打刻] *${clockTypeObject.text}* ${clockTypeObject.emoji}`));
 
