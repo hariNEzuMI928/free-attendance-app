@@ -96,6 +96,7 @@ const startKintaiModal = async (body, view, client) => {
     }));
 
     promise.push(client.users.profile.set({
+      user: slackUserId,
       token: process.env.SLACK_USER_TOKEN,
       profile: { status_emoji: commonService.TIME_CLOCK_TYPE.clock_in.emoji },
     }));
