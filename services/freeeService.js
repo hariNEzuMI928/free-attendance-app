@@ -87,10 +87,15 @@ const createErrMsg = async (response, freeeEmpId) => {
 }
 
 const getAvailableTypes = async (freeeEmpId) => {
-  const uri = "employees/" + freeeEmpId + "/time_clocks/available_types"
-    + `?company_id=${process.env.FREEEE_CAMPANY_ID}&emp_id=${freeeEmpId}&date=${commonService.formatDate()}`;
+  const uri = new URL(FREEE_API_ENDPOINT + "employees/" + freeeEmpId + "/time_clocks/available_types")
+  const params = {
+    company_id: process.env.FREEEE_CAMPANY_ID,
+    emp_id: freeeEmpId,
+    date: commonService.formatDate(),
+  }
+  uri.search = new URLSearchParams(params).toString();
 
-  const response = await (await fetch(FREEE_API_ENDPOINT + uri, {
+  const response = await (await fetch(uri, {
     method: "GET",
     headers: headers,
   })).json();
