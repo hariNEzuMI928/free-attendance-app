@@ -26,10 +26,10 @@ const startKintaiModal = async (body, view, client) => {
       user: slackUserId,
     });
 
-    await freeeService.postTimeClocks(
-      profile.email,
-      commonService.TIME_CLOCK_TYPE.clock_in.value
-    );
+    // await freeeService.postTimeClocks(
+    //   profile.email,
+    //   commonService.TIME_CLOCK_TYPE.clock_in.value
+    // );
 
     const msg = `${commonService.locations[selectedOption]} で${commonService.TIME_CLOCK_TYPE.clock_in.text}します！${commonService.TIME_CLOCK_TYPE.clock_in.emoji} (${profile.display_name})`;
 

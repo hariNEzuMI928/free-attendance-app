@@ -21,7 +21,7 @@ const postTimeClockAction = async (body, say, client) => {
             user: slackUserId,
         });
 
-        await freeeService.postTimeClocks(profile.email, clockTypeObject.value);
+        // await freeeService.postTimeClocks(profile.email, clockTypeObject.value);
 
         promise.push(say(`[打刻] *${clockTypeObject.text}* ${clockTypeObject.emoji}`));
 
