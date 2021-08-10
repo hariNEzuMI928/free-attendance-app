@@ -1,4 +1,4 @@
-const { App } = require("@slack/bolt");
+import { App } from "@slack/bolt";
 
 const app = new App({
     socketMode: true,
@@ -6,4 +6,4 @@ const app = new App({
     appToken: process.env.SLACK_APP_TOKEN,
 });
 
-module.exports = { app: app };
+export default app;

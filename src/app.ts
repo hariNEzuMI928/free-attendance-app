@@ -1,7 +1,8 @@
-require("dotenv").config();
+import dotenv from "dotenv";
+dotenv.config();
 
-const { app } = require("./services/slackService");
-const handlers = require("./handlers");
+import app from "./services/slackService";
+import handlers from "./handlers";
 const { TIME_CLOCK_TYPE } = require("./services/commonService");
 
 // 勤怠打刻開始モーダル

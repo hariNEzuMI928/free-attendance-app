@@ -39,10 +39,12 @@ https://slack.dev/bolt-js/ja-jp/tutorial/getting-started
 16. [x] handle 切り出し
 17. [ ] kibela 書く
 18. [ ] Jest
-19. [ ] Import
-20. [ ] TypeScript
+19. [x] Import
+20. [x] TypeScript
 21. [ ] Github Actions で deploy
 22. [ ] どうやっても他の人の勤怠を登録・編集できないようにする
 23. [x] デプロイするときに runtime を指定
 24. [ ] envファイルを分ける
 25. [x] エラー処理共通化
+26. [ ] Slack OAuth
+27. [ ] freee OAuth
