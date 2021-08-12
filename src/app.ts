@@ -3,7 +3,7 @@ dotenv.config();
 
 import app from "./services/slackService";
 import handlers from "./handlers";
-const { TIME_CLOCK_TYPE } = require("./services/commonService");
+import { TIME_CLOCK_TYPE } from "./services/commonService";
 
 // 勤怠打刻開始モーダル
 app.shortcut("start_attendance_shortcut", handlers.handleStartAttendanceShortcut);

@@ -48,3 +48,7 @@ https://slack.dev/bolt-js/ja-jp/tutorial/getting-started
 25. [x] エラー処理共通化
 26. [ ] Slack OAuth
 27. [ ] freee OAuth
+28. [ ] store
+    1.  [ ] Slack User Id
+    2.  [ ] Slack Auth Token
+    3.  [ ] freee Emp Id
