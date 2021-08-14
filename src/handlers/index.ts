@@ -1,9 +1,5 @@
-const handleStartAttendanceModal = require("./handleStartAttendanceModal");
-const handleStartAttendanceShortcut = require("./handleStartAttendanceShortcut");
-const handlePostTimeClockAction = require("./handlePostTimeClockAction");
-
 export default {
-  handleStartAttendanceModal: handleStartAttendanceModal,
-  handleStartAttendanceShortcut: handleStartAttendanceShortcut,
-  handlePostTimeClockAction: handlePostTimeClockAction,
+  handleStartAttendanceModal: require("./handleStartAttendanceModal"),
+  handleStartAttendanceShortcut: require("./handleStartAttendanceShortcut"),
+  handlePostTimeClockAction: require("./handlePostTimeClockAction"),
 };
