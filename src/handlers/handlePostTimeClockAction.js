@@ -1,14 +1,14 @@
 const freeeService = require("../services/freeeService");
 const commonService = require("../services/commonService");
 
-const handlePostTimeClockAction = async ({ body, ack, say, client }) => {
+const handlePostTimeClockAction = async ({ body, ack, say, client, context }) => {
   await ack();
 
   // Slack側でタイムアウトにならないように別関数に切り出す
-  await postTimeClockAction(body, say, client);
+  await postTimeClockAction(body, say, client, context);
 };
 
-const postTimeClockAction = async (body, say, client) => {
+const postTimeClockAction = async (body, say, client, context) => {
   const promise = [];
 
   const actionId = body.actions[0].action_id;
@@ -33,7 +33,7 @@ const postTimeClockAction = async (body, say, client) => {
     }));
 
     promise.push(client.users.profile.set({
-      token: process.env.SLACK_USER_TOKEN,
+      token: context.userToken,
       profile: { status_emoji: clockTypeObject.emoji },
     }));
 

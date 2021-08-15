@@ -17,13 +17,11 @@ export const saveUser = async (user: User): Promise<void> => {
   }
 };
 
-export const getUser = async (
-  teamId: string,
-): Promise<User | undefined> => {
+export const getUser = async (userId: string): Promise<User | undefined> => {
   const ret = await database
     .get({
       TableName: userTable,
-      Key: { teamId },
+      Key: { userId },
       ConsistentRead: true,
     })
     .promise();

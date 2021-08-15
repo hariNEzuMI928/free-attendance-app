@@ -27,7 +27,7 @@ export const buildPutWorkspaceParams = (
 
   return {
     teamId,
-    tenantId: installation?.team?.id || "",
+    tenantId: installation.team?.id || "",
     name: installation.team?.name,
     appId: installation.appId || "",
     botId: installation.bot?.id || "",

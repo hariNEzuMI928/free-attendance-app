@@ -18,40 +18,41 @@ const receiver = new ExpressReceiver({
   clientId: process.env.SLACK_CLIENT_ID,
   clientSecret: process.env.SLACK_CLIENT_SECRET,
   stateSecret: "free-attendance-app",
-  scopes: ["chat:write", "chat:write.public", "chat:write.customize"],
+  scopes: scopes,
   installerOptions: {
-    userScopes: ["users.profile:read", "users.profile:write"],
+    userScopes: userScopes,
   },
   installationStore: {
     storeInstallation: async (installation) => {
       try {
-        if (installation?.team === undefined) {
+        if (installation?.team === undefined)
           throw new Error(
             "Failed saving installation data to installationStore"
           );
-        }
+
         const workspace = buildPutWorkspaceParams(installation);
         const user = buildPutUserParams(installation);
 
         await Promise.all([saveWorkspace(workspace), saveUser(user)]);
-
         return Promise.resolve();
-
       } catch (error) {
-        console.error(error);
+        return Promise.reject(error);
       }
     },
     fetchInstallation: async (installQuery) => {
       try {
-        const tenantId = installQuery?.teamId || "";
-        const workspace = await getWorkspace(tenantId);
-        const user = await getUser(tenantId);
+        const teamId = installQuery?.teamId || "";
+        const userId = installQuery?.userId || "";
 
-        if (!workspace) throw new Error("Failed to get workspace!");
-        if (!user) throw new Error("Failed to get user!");
+        const workspace = await getWorkspace(teamId);
+        if (!workspace) throw new Error("Failed to get workspace.");
+
+        const user = await getUser(userId);
+        if (!user) throw new Error("Failed to get user.");
 
         const workspaceInstallation = buildSlackInstallation(workspace);
         const userInstallation = buildUserInstallation(user);
+
         const installation: Installation<"v2", false> = {
           ...workspaceInstallation,
           user: userInstallation,

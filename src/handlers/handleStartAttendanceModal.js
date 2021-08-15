@@ -1,14 +1,14 @@
 const freeeService = require("../services/freeeService");
 const commonService = require("../services/commonService");
 
-const handleStartAttendanceModal = async ({ ack, body, view, client }) => {
+const handleStartAttendanceModal = async ({ ack, body, view, client, context }) => {
   await ack();
 
   // Slack側でタイムアウトにならないように別関数に切り出す
-  await startKintaiModal(body, view, client);
+  await startKintaiModal(body, view, client, context);
 };
 
-const startKintaiModal = async (body, view, client) => {
+const startKintaiModal = async (body, view, client, context) => {
   const slackUserId = body.user.id;
   const promise = [];
 
@@ -97,7 +97,7 @@ const startKintaiModal = async (body, view, client) => {
 
     promise.push(client.users.profile.set({
       user: slackUserId,
-      token: process.env.SLACK_USER_TOKEN,
+      token: context.userToken,
       profile: { status_emoji: commonService.TIME_CLOCK_TYPE.clock_in.emoji },
     }));
   } catch (error) {
