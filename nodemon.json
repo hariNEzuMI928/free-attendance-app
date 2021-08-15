@@ -1,5 +1,6 @@
 {
   "watch": ["src"],
-  "ext": "ts,tsx,js,jsx",
+  "ext": "ts, tsx, js, jsx",
+  "ignore": [],
   "exec": "./node_modules/.bin/ts-node ./src/app.ts"
 }

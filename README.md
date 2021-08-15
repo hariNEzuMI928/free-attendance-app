@@ -50,9 +50,13 @@ https://slack.dev/bolt-js/ja-jp/tutorial/getting-started
 23. [x] デプロイするときに runtime を指定
 24. [ ] envファイルを分ける
 25. [x] エラー処理共通化
-26. [ ] Slack OAuth
+26. [x] Slack OAuth
 27. [ ] freee OAuth
 28. [ ] store
-    1.  [ ] Slack User Id
-    2.  [ ] Slack Auth Token
+    1.  [x] Slack User Id
+    2.  [x] Slack Auth Token
     3.  [ ] freee Emp Id
+29. [ ] EC2かLight sailでデプロイ
+30. [ ] AWS 側でDynamodbの設定
+31. [ ] テーブルがなかったときに新規作成
+32. [ ] 全てTypeScriptに書き換え、boltで定義されている型を仕様
