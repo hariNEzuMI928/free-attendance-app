@@ -10,8 +10,8 @@ import {
   buildPutUserParams,
   buildUserInstallation,
 } from "./../shared/model/User";
-import { putWorkspace, getWorkspaceByKey } from "./../shared/dao/workspace";
-import { putUser, getUserByKey } from "./../shared/dao/user";
+import { saveWorkspace, getWorkspace } from "./../shared/dao/workspace";
+import { saveUser, getUser } from "./../shared/dao/user";
 
 const receiver = new ExpressReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET!,
@@ -25,15 +25,18 @@ const receiver = new ExpressReceiver({
   installationStore: {
     storeInstallation: async (installation) => {
       try {
-        const tenantId = installation?.team?.id || "";
-        const sub = installation.user.id;
-        const workspace = buildPutWorkspaceParams({
-          tenantId,
-          installation,
-        });
-        const user = buildPutUserParams({ tenantId, sub, installation });
-        await Promise.all([putWorkspace(workspace), putUser(user)]);
+        if (installation?.team === undefined) {
+          throw new Error(
+            "Failed saving installation data to installationStore"
+          );
+        }
+        const workspace = buildPutWorkspaceParams(installation);
+        const user = buildPutUserParams(installation);
+
+        await Promise.all([saveWorkspace(workspace), saveUser(user)]);
+
         return Promise.resolve();
+
       } catch (error) {
         console.error(error);
       }
@@ -41,8 +44,8 @@ const receiver = new ExpressReceiver({
     fetchInstallation: async (installQuery) => {
       try {
         const tenantId = installQuery?.teamId || "";
-        const workspace = await getWorkspaceByKey(tenantId);
-        const user = await getUserByKey(tenantId, installQuery.userId || "");
+        const workspace = await getWorkspace(tenantId);
+        const user = await getUser(tenantId);
 
         if (!workspace) throw new Error("Failed to get workspace!");
         if (!user) throw new Error("Failed to get user!");

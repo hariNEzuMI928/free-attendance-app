@@ -1,6 +1,11 @@
 import { Installation } from "@slack/bolt";
 
-export const scopes = ["chat:write", "chat:write.public", "chat:write.customize"]; // Specify Slack bot scopes to request when users install your app.
+export const scopes = [
+  "chat:write",
+  "chat:write.public",
+  "chat:write.customize",
+];
+
 export type Scopes = typeof scopes[number];
 
 export default interface Workspace {
@@ -13,22 +18,16 @@ export default interface Workspace {
   token: string;
   scopes: Scopes[];
 }
-interface BuildPutWorkspaceParams {
-  tenantId: string;
-  installation: Installation;
-}
 
-export const buildPutWorkspaceParams = ({
-  tenantId,
-  installation,
-}: BuildPutWorkspaceParams): Workspace => {
+export const buildPutWorkspaceParams = (
+  installation: Installation
+): Workspace => {
   const teamId = installation.team?.id;
-  if (!teamId) {
-    throw new Error("Not support Org installation!");
-  }
+  if (!teamId) throw new Error("Not support Org installation!");
+
   return {
     teamId,
-    tenantId,
+    tenantId: installation?.team?.id || "",
     name: installation.team?.name,
     appId: installation.appId || "",
     botId: installation.bot?.id || "",

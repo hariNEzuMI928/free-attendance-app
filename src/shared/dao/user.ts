@@ -1,11 +1,11 @@
 import User from "../model/User";
-import dynamodb from "../../services/dynamodb";
+import database from "../../services/database";
 
 const userTable = "InstallUser-FreeeAttendanceApp";
 
-export const putUser = async (user: User): Promise<void> => {
+export const saveUser = async (user: User): Promise<void> => {
   try {
-    await dynamodb.doc
+    await database
       .put({
         TableName: userTable,
         Item: user,
@@ -17,12 +17,16 @@ export const putUser = async (user: User): Promise<void> => {
   }
 };
 
-export const getUserByKey = async (teamId: string, userId: string): Promise<User | undefined> => {
-  const ret = await dynamodb.doc.get({
-    TableName: userTable,
-    Key: { teamId },
-    ConsistentRead: true,
-  }).promise();
+export const getUser = async (
+  teamId: string,
+): Promise<User | undefined> => {
+  const ret = await database
+    .get({
+      TableName: userTable,
+      Key: { teamId },
+      ConsistentRead: true,
+    })
+    .promise();
 
   return ret.Item as User | undefined;
 };

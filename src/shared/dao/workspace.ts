@@ -1,11 +1,11 @@
 import Workspace from "../model/Workspace";
-import dynamodb from "../../services/dynamodb";
+import database from "../../services/database";
 
 const workspaceTable = "InstallWorkspace-FreeeAttendanceApp";
 
-export const putWorkspace = async (workspace: Workspace): Promise<void> => {
+export const saveWorkspace = async (workspace: Workspace): Promise<void> => {
   try {
-    await dynamodb.doc
+    await database
       .put({
         TableName: workspaceTable,
         Item: workspace,
@@ -17,10 +17,10 @@ export const putWorkspace = async (workspace: Workspace): Promise<void> => {
   }
 };
 
-export const getWorkspaceByKey = async (
+export const getWorkspace = async (
   teamId: string
 ): Promise<Workspace | undefined> => {
-  const ret = await dynamodb.doc
+  const ret = await database
     .get({
       TableName: workspaceTable,
       Key: { teamId },
