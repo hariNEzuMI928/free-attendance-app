@@ -19,7 +19,12 @@ app.action(TIME_CLOCK_TYPE.break_begin.value, handlers.handlePostTimeClockAction
 app.action(TIME_CLOCK_TYPE.break_end.value, handlers.handlePostTimeClockAction);
 app.action(TIME_CLOCK_TYPE.clock_out.value, handlers.handlePostTimeClockAction);
 
+app.error(async (error: Error) => {console.error(error)});
+
 (async () => {
-  await app.start();
+  process.env.PORT
+    ? await app.start(Number(process.env.PORT))
+    : await app.start();
+
   console.log("⚡️ Bolt app is running!");
 })();
