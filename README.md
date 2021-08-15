@@ -7,20 +7,15 @@
 # Development
 
 ```
-$ export SLACK_SIGNING_SECRET=xxxxxxxxxxxx
-$ export SLACK_BOT_TOKEN=xoxb-xxxxxxxxxxxx
-$ ngrok http 3030
-$ node_modules/.bin/nodemon app.js # develop
+$ # develop
+$ yarn run ng
+$ yarn run local
 $ node app.js
 
 $ npx serverless offline --noPrependStageInUrl # serverless
 ```
 
 http://xxxxxxxxxxxx.ngrok.io/slack/events
-
-# reference
-
-https://slack.dev/bolt-js/ja-jp/tutorial/getting-started
 
 # TODO
 
@@ -60,3 +55,4 @@ https://slack.dev/bolt-js/ja-jp/tutorial/getting-started
 30. [ ] AWS 側でDynamodbの設定
 31. [ ] テーブルがなかったときに新規作成
 32. [ ] 全てTypeScriptに書き換え、boltで定義されている型を仕様
+33. [ ] TSで＠でpath
