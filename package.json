@@ -1,7 +1,7 @@
 {
-  "name": "free-attendance-app",
+  "name": "freee-attendance-app",
   "version": "1.0.0",
-  "description": "free-attendance-app",
+  "description": "freee-attendance-app",
   "main": "src/app.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hariNEzuMI928/free-attendance-app.git"
+    "url": "git+https://github.com/hariNEzuMI928/freee-attendance-app.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/hariNEzuMI928/free-attendance-app/issues"
+    "url": "https://github.com/hariNEzuMI928/freee-attendance-app/issues"
   },
-  "homepage": "https://github.com/hariNEzuMI928/free-attendance-app#readme",
+  "homepage": "https://github.com/hariNEzuMI928/freee-attendance-app#readme",
   "dependencies": {
     "@slack/bolt": "^3.4.1",
     "dotenv": "^10.0.0",

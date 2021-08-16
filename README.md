@@ -1,4 +1,4 @@
-# free-attendance-app
+# freee-attendance-app
 
 <a href="https://slack.com/oauth/v2/authorize?scope=chat:write,chat:write.public,chat:write.customize&user_scope=users.profile:read,users.profile:write&client_id=1788434032663.2276845659921">
   <img alt=""Add to Slack"" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" />
@@ -52,7 +52,8 @@ http://xxxxxxxxxxxx.ngrok.io/slack/events
     2.  [x] Slack Auth Token
     3.  [ ] freee Emp Id
 29. [ ] EC2かLight sailでデプロイ
-30. [ ] AWS 側でDynamodbの設定
-31. [ ] テーブルがなかったときに新規作成
+30. [ ] AWS 側でDynamodbの設定 **＿<----これ！！！！！＿**
+31. [x] テーブルがなかったときに新規作成 (https://www.wakuwakubank.com/posts/670-nodejs-dynamodb/)  **＿<----これ！！！！！＿**
 32. [ ] 全てTypeScriptに書き換え、boltで定義されている型を仕様
 33. [ ] TSで＠でpath
+34. [ ] ts use strict
