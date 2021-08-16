@@ -1,67 +1,21 @@
-import { App, ExpressReceiver, Installation } from "@slack/bolt";
+import { App, ExpressReceiver } from "@slack/bolt";
 
-import {
-  scopes,
-  buildPutWorkspaceParams,
-  buildSlackInstallation,
-} from "./../shared/model/Workspace";
-import {
-  scopes as userScopes,
-  buildPutUserParams,
-  buildUserInstallation,
-} from "./../shared/model/User";
-import { saveWorkspace, getWorkspace } from "./../shared/dao/workspace";
-import { saveUser, getUser } from "./../shared/dao/user";
+import { scopes } from "./../shared/model/Workspace";
+import { scopes as userScopes } from "./../shared/model/User";
+import { storeInstallation, fetchInstallation } from "./installationService";
 
 const receiver = new ExpressReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET!,
   clientId: process.env.SLACK_CLIENT_ID,
   clientSecret: process.env.SLACK_CLIENT_SECRET,
-  stateSecret: "free-attendance-app",
+  stateSecret: "freee-attendance-app",
   scopes: scopes,
   installerOptions: {
     userScopes: userScopes,
   },
   installationStore: {
-    storeInstallation: async (installation) => {
-      try {
-        if (installation?.team === undefined)
-          throw new Error(
-            "Failed saving installation data to installationStore"
-          );
-
-        const workspace = buildPutWorkspaceParams(installation);
-        const user = buildPutUserParams(installation);
-
-        await Promise.all([saveWorkspace(workspace), saveUser(user)]);
-        return Promise.resolve();
-      } catch (error) {
-        return Promise.reject(error);
-      }
-    },
-    fetchInstallation: async (installQuery) => {
-      try {
-        const teamId = installQuery?.teamId || "";
-        const userId = installQuery?.userId || "";
-
-        const workspace = await getWorkspace(teamId);
-        if (!workspace) throw new Error("Failed to get workspace.");
-
-        const user = await getUser(userId);
-        if (!user) throw new Error("Failed to get user.");
-
-        const workspaceInstallation = buildSlackInstallation(workspace);
-        const userInstallation = buildUserInstallation(user);
-
-        const installation: Installation<"v2", false> = {
-          ...workspaceInstallation,
-          user: userInstallation,
-        };
-        return Promise.resolve(installation);
-      } catch (error) {
-        return Promise.reject(error);
-      }
-    },
+    storeInstallation: storeInstallation,
+    fetchInstallation: fetchInstallation,
   },
 });
 

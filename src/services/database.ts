@@ -5,7 +5,6 @@ const offlineOptions: DynamoDB.Types.ClientConfiguration = {
   endpoint: `http://localhost:8000`,
 };
 
-// const dynamodb = new DynamoDB(offlineOptions);
-const database = new DynamoDB.DocumentClient(offlineOptions);
 
-export default database;
+export const database = new DynamoDB(offlineOptions);
+export const databaseClient = new DynamoDB.DocumentClient(offlineOptions);

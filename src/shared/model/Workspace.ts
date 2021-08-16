@@ -10,7 +10,6 @@ export type Scopes = typeof scopes[number];
 
 export default interface Workspace {
   teamId: string;
-  tenantId: string;
   name: string | undefined;
   appId: string;
   botId: string;
@@ -27,7 +26,6 @@ export const buildPutWorkspaceParams = (
 
   return {
     teamId,
-    tenantId: installation.team?.id || "",
     name: installation.team?.name,
     appId: installation.appId || "",
     botId: installation.bot?.id || "",
