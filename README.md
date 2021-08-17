@@ -55,6 +55,6 @@ http://xxxxxxxxxxxx.ngrok.io/slack/events
 30. [x] AWS 側でDynamodbの設定
 31. [x] テーブルがなかったときに新規作成 (https://www.wakuwakubank.com/posts/670-nodejs-dynamodb/)
 32. [ ] 全てTypeScriptに書き換え、boltで定義されている型を仕様
-33. [ ] TSで＠でpath
+33. [ ] TSのエイリアスpath
 34. [ ] ts use strict
 35. [ ] Docker-compose
