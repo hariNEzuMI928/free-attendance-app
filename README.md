@@ -52,8 +52,9 @@ http://xxxxxxxxxxxx.ngrok.io/slack/events
     2.  [x] Slack Auth Token
     3.  [ ] freee Emp Id
 29. [ ] EC2かLight sailでデプロイ
-30. [ ] AWS 側でDynamodbの設定 **＿<----これ！！！！！＿**
-31. [x] テーブルがなかったときに新規作成 (https://www.wakuwakubank.com/posts/670-nodejs-dynamodb/)  **＿<----これ！！！！！＿**
+30. [x] AWS 側でDynamodbの設定
+31. [x] テーブルがなかったときに新規作成 (https://www.wakuwakubank.com/posts/670-nodejs-dynamodb/)
 32. [ ] 全てTypeScriptに書き換え、boltで定義されている型を仕様
 33. [ ] TSで＠でpath
 34. [ ] ts use strict
+35. [ ] Docker-compose
