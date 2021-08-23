@@ -1,7 +1,8 @@
 /**
- * リポジトリ全体で共通で使う関数や変数など
+ *
+ * const
+ *
  */
-
 export const locations = ["自宅", "会社", "布団の中", "その他の場所"];
 
 export const locationOptions = locations.map((location, index) => {
@@ -22,6 +23,11 @@ export const TIME_CLOCK_TYPE = {
   clock_out: { value: "clock_out", text: "退勤", emoji: ":crescent_moon:" },
 };
 
+/**
+ *
+ * date function
+ *
+ */
 export const formatDate = (includeTime: any) => {
   const d = new Date();
   // const d = new Date('2020-05-20 ' + new Date().toLocaleTimeString("en-GB")); // dev
@@ -35,6 +41,11 @@ export const formatDate = (includeTime: any) => {
   return includeTime ? date + " " + d.toLocaleTimeString("en-GB") : date;
 };
 
+/**
+ *
+ * comonn handler
+ *
+ */
 export const handleError = async ({
   client: client,
   error: error,
